@@ -19,3 +19,8 @@ Simple todo CLI utility made for Linux with help of [ChatGPT](https://openai.com
 `todo status <task number>` - toggles status between todo and finished.\
 `todo help` - display help message.
 
+## 🔧 Installation
+1. From latest release, download the "todo" file.
+2. Open terminal in the "todo" file location.
+3. Use command `sudo mv todo /usr/local/bin/todo`.
+4. Now you can access the program from any place.
