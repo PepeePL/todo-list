@@ -1,5 +1,6 @@
 # todo-list
-Simple todo CLI utility made for Linux with help of [ChatGPT](https://openai.com/blog/chatgpt/).
+Simple todo CLI utility made for Linux with help of [ChatGPT](https://openai.com/blog/chatgpt/).\
+ It's in early stage of development and could contain errors *(I hope not critical ones!)*.
 ## ✨ Features
 - #### 🦀 Fast
     Program is written in Rust so it's incredibly fast.
