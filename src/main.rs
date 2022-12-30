@@ -27,7 +27,15 @@ fn add_task(filename: &str, items: &mut Vec<&str>, status: &str) {
     let mut read_data = read_from_file(filename).unwrap();
 
     // Joins the task into a single string
-    let task = items.join(" ");
+    let mut task = items.join(" ");
+
+    // If string starts or ends with spaces, remove them
+    if task.starts_with(" ") {
+        task = task.trim_start().to_string();
+    }
+    if task.ends_with(" ") {
+        task = task.trim_end().to_string();
+    }
 
     // Formats the task string and the status integer into a single string separated by a comma
     let mut formatted_data = format!("{}, {}", task, status);
