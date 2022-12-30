@@ -222,7 +222,7 @@ fn main() {
                         println!("remove, r     Remove a task by its number");
                         println!("list, l       List all tasks");
                         println!("status, s     Change status of a task by its number");
-                        println!("help, ?       Show this help");
+                        println!("help, h       Show this help");
                         println!(" ");
                         println!("Examples");
                         println!("todo add \"Compile code\"  Add a new task");
