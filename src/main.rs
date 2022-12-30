@@ -145,83 +145,83 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     // Check if the command argument is provided
-    if args.len() < 1 {
-        println!("No command provided. Use 'help' to find some info.");
-        return;
-    }
-    let command = &args[1];
-    let mut arg: Vec<&str> = args[2..].iter().map(|s| s.as_ref()).collect();
+    if args.len() > 1 {
+        let command = &args[1];
+        let mut arg: Vec<&str> = args[2..].iter().map(|s| s.as_ref()).collect();
 
-    // Check if command is empty
-    match command.is_empty() {
-        true => println!("Invalid command. Use 'help' to find some info."),
-        false => {
-            let command = command.to_lowercase();
+        // Check if command is empty
+        match command.is_empty() {
+            true => println!("Invalid command. Use 'help' to find some info."),
+            false => {
+                let command = command.to_lowercase();
 
-            // Match on the command
-            match command.as_ref() {
-                "add" | "a" => {
-                    match arg.is_empty() {
-                        true => println!("Correct usage: todo add [task]"),
-                        false => {
-                            add_task(filename, &mut arg, 0);
-                        }
-                    };
+                // Match on the command
+                match command.as_ref() {
+                    "add" | "a" => {
+                        match arg.is_empty() {
+                            true => println!("Correct usage: todo add [task]"),
+                            false => {
+                                add_task(filename, &mut arg, 0);
+                            }
+                        };
+                    }
+
+                    "list" | "l" => list_tasks(filename),
+                    "remove" | "r" => {
+                        match arg.is_empty() {
+                            true => println!("Correct usage: todo remove [task number]"),
+                            false => {
+                                // Convert the argument to a vector of usize (task numbers)
+                                let arg_as_number: Vec<usize> =
+                                    arg.iter().map(|s| s.parse::<usize>().unwrap()).collect();
+
+                                // Get the first element of the vector (should only be one element)
+                                let first_element: usize = *arg_as_number.iter().next().unwrap();
+
+                                // Remove the task with the specified number
+                                remove_task(filename, first_element);
+                            }
+                        };
+                    }
+                    "status" | "s" => {
+                        match arg.is_empty() {
+                            true => println!("Correct usage: todo status [task number]"),
+                            false => {
+                                // Convert the argument to a vector of usize (task numbers)
+                                let arg_as_number: Vec<usize> =
+                                    arg.iter().map(|s| s.parse::<usize>().unwrap()).collect();
+
+                                // Get the first element of the vector (should only be one element)
+                                let first_element: usize = *arg_as_number.iter().next().unwrap();
+
+                                // Remove the task with the specified number
+                                status_toggle(filename, first_element);
+                            }
+                        };
+                    }
+                    "help" | "h" => {
+                        println!("Usage: todo [command] [options]");
+                        println!(" ");
+                        println!("Commands");
+                        println!("add, a        Add a new task");
+                        println!("remove, r     Remove a task by its number");
+                        println!("list, l       List all tasks");
+                        println!("status, s     Change status of a task by its number");
+                        println!("help, ?       Show this help");
+                        println!(" ");
+                        println!("Examples");
+                        println!("todo add \"Compile code\"  Add a new task");
+                        println!("todo remove 2              Remove task number 2");
+                        println!("todo list                  List all tasks");
+                        println!("todo status 3              Change status of task number 3")
+                    }
+                    _ => println!("Invalid command. Use 'help' to find some info."),
                 }
-
-                "list" | "l" => list_tasks(filename),
-                "remove" | "r" => {
-                    match arg.is_empty() {
-                        true => println!("Correct usage: todo remove [task number]"),
-                        false => {
-                            // Convert the argument to a vector of usize (task numbers)
-                            let arg_as_number: Vec<usize> =
-                                arg.iter().map(|s| s.parse::<usize>().unwrap()).collect();
-
-                            // Get the first element of the vector (should only be one element)
-                            let first_element: usize = *arg_as_number.iter().next().unwrap();
-
-                            // Remove the task with the specified number
-                            remove_task(filename, first_element);
-                        }
-                    };
-                }
-                "status" | "s" => {
-                    match arg.is_empty() {
-                        true => println!("Correct usage: todo status [task number]"),
-                        false => {
-                            // Convert the argument to a vector of usize (task numbers)
-                            let arg_as_number: Vec<usize> =
-                                arg.iter().map(|s| s.parse::<usize>().unwrap()).collect();
-
-                            // Get the first element of the vector (should only be one element)
-                            let first_element: usize = *arg_as_number.iter().next().unwrap();
-
-                            // Remove the task with the specified number
-                            status_toggle(filename, first_element);
-                        }
-                    };
-                }
-                "help" | "h" => {
-                    println!("Usage: todo [command] [options]");
-                    println!(" ");
-                    println!("Commands");
-                    println!("add, a        Add a new task");
-                    println!("remove, r     Remove a task by its number");
-                    println!("list, l       List all tasks");
-                    println!("status, s     Change status of a task by its number");
-                    println!("help, ?       Show this help");
-                    println!(" ");
-                    println!("Examples");
-                    println!("todo add \"Compile code\"  Add a new task");
-                    println!("todo remove 2              Remove task number 2");
-                    println!("todo list                  List all tasks");
-                    println!("todo status 3              Change status of task number 3")
-                }
-                _ => println!("Invalid command. Use 'help' to find some info."),
             }
-        }
-    };
+        };
+    } else {
+        println!("No arguments provided. Use 'help' to find some info.");
+    }
 }
 
 // UNUSED CODE
