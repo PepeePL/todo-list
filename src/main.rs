@@ -22,7 +22,7 @@ fn read_from_file(filename: &str) -> Result<Vec<String>, Box<dyn Error>> {
 }
 
 // add task to the list
-fn add_task(filename: &str, items: &mut Vec<&str>, status: i16) {
+fn add_task(filename: &str, items: &mut Vec<&str>, status: &str) {
     // Reads the contents of the file and stores it in a vector of strings
     let mut read_data = read_from_file(filename).unwrap();
 
@@ -54,9 +54,10 @@ fn list_tasks(filename: &str) {
         println!("The list is empty!");
         return;
     } //prints items and adds numeration to them
+    println!("Task list:");
     for (i, item) in read_data.iter().enumerate() {
-        let item = item.replace(", 1", " ✅ finished!");
-        let item = item.replace(", 0", " ❎ TODO");
+        let item = item.replace(", (true)", " ✅ finished!");
+        let item = item.replace(", (false)", " ❎ TODO");
         println!("{}. {}", i + 1, item);
     }
 }
@@ -84,8 +85,8 @@ fn status_toggle(filename: &str, index: usize) {
     // Reads the contents of the file and stores it in a vector of strings
     let mut read_data = read_from_file(filename).unwrap();
     if index <= read_data.len() {
-        if read_data[index - 1].contains(", 1") {
-            read_data[index - 1] = read_data[index - 1].replace("1", "0");
+        if read_data[index - 1].ends_with(", (true)") {
+            read_data[index - 1] = read_data[index - 1].replace(", (true)", ", (false)");
             // Joins the vector into a single string with \n separating elements
             let data = read_data.join("\n");
 
@@ -94,8 +95,8 @@ fn status_toggle(filename: &str, index: usize) {
                 Ok(()) => println!("Task status set to unfinished!"),
                 Err(error) => println!("Error occurred while writing to file: {}", error),
             };
-        } else {
-            read_data[index - 1] = read_data[index - 1].replace("0", "1");
+        } else if read_data[index - 1].ends_with(", (false)") {
+            read_data[index - 1] = read_data[index - 1].replace(", (false)", ", (true)");
             // Joins the vector into a single string with \n separating elements
             let data = read_data.join("\n");
 
@@ -161,7 +162,7 @@ fn main() {
                         match arg.is_empty() {
                             true => println!("Correct usage: todo add [task]"),
                             false => {
-                                add_task(filename, &mut arg, 0);
+                                add_task(filename, &mut arg, "(false)");
                             }
                         };
                     }
