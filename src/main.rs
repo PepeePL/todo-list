@@ -186,9 +186,12 @@ fn main() {
 
                                 // Get the first element of the vector (should only be one element)
                                 let first_element: usize = *arg_as_number.iter().next().unwrap();
-
-                                // Remove the task with the specified number
-                                remove_task(filename, first_element);
+                                if first_element > 0 {
+                                    // Remove the task with the specified number
+                                    remove_task(filename, first_element);
+                                } else {
+                                    println!("Error! There is no task at the specified index.")
+                                }
                             }
                         };
                     }
@@ -202,9 +205,12 @@ fn main() {
 
                                 // Get the first element of the vector (should only be one element)
                                 let first_element: usize = *arg_as_number.iter().next().unwrap();
-
-                                // Remove the task with the specified number
-                                status_toggle(filename, first_element);
+                                if first_element > 0 {
+                                    // Remove the task with the specified number
+                                    status_toggle(filename, first_element);
+                                } else {
+                                    println!("Error! There is no task at the specified index.")
+                                }
                             }
                         };
                     }
