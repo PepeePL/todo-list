@@ -1,3 +1,4 @@
+extern crate dirs;
 use dirs::home_dir;
 use std::error::Error;
 use std::{
