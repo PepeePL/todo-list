@@ -89,6 +89,28 @@ fn remove_task(filename: &str, index: usize) {
         println!("Error! There is no task at the specified index.");
     }
 }
+
+// remove all tasks from list
+fn remove_all_tasks(filename: &str) {
+    // Reads the contents of the file and stores it in a vector of strings
+    let mut read_data = read_from_file(filename).unwrap();
+
+    if read_data.len() > 0 {
+        // Remove all tasks from the vector
+        read_data.clear();
+
+        // Joins the vector into a single string with \n separating elements
+        let data = read_data.join("\n");
+
+        // Write the modified data back to the file
+        match fs::write(filename, data) {
+            Ok(()) => println!("All tasks removed"),
+            Err(error) => println!("Error occurred while writing to file: {}", error),
+        }
+    } else {
+        println!("Error! The list is empty.");
+    }
+}
 fn status_toggle(filename: &str, index: usize) {
     // Reads the contents of the file and stores it in a vector of strings
     let mut read_data = read_from_file(filename).unwrap();
@@ -105,6 +127,7 @@ fn status_toggle(filename: &str, index: usize) {
             };
         } else if read_data[index - 1].ends_with(", (false)") {
             read_data[index - 1] = read_data[index - 1].replace(", (false)", ", (true)");
+
             // Joins the vector into a single string with \n separating elements
             let data = read_data.join("\n");
 
@@ -133,6 +156,7 @@ fn main() {
     // Append config file directory to home directory
     let tasks_file_path = home_dir.join(".config").join("todo").join("tasks.txt");
     let tasks_dir_path = home_dir.join(".config").join("todo");
+
     // change PathBuf variables to str
     let filename = tasks_file_path.to_str().unwrap();
     let filepath = tasks_dir_path.to_str().unwrap();
@@ -154,7 +178,10 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     // Check if the command argument is provided
-    if args.len() > 1 {
+    if args.len() == 1 {
+        println!("No arguments provided. Use 'help' to find some info.");
+    } else {
+        // Break provided arguments into two pieces
         let command = &args[1];
         let mut arg: Vec<&str> = args[2..].iter().map(|s| s.as_ref()).collect();
 
@@ -178,19 +205,24 @@ fn main() {
                     "list" | "l" => list_tasks(filename),
                     "remove" | "r" => {
                         match arg.is_empty() {
-                            true => println!("Correct usage: todo remove [task number]"),
+                            true => println!("Correct usage: todo remove [task number|all]"),
                             false => {
-                                // Convert the argument to a vector of usize (task numbers)
-                                let arg_as_number: Vec<usize> =
-                                    arg.iter().map(|s| s.parse::<usize>().unwrap()).collect();
-
-                                // Get the first element of the vector (should only be one element)
-                                let first_element: usize = *arg_as_number.iter().next().unwrap();
-                                if first_element > 0 {
-                                    // Remove the task with the specified number
-                                    remove_task(filename, first_element);
+                                if arg.contains(&"all") {
+                                    remove_all_tasks(filename)
                                 } else {
-                                    println!("Error! There is no task at the specified index.")
+                                    // Convert the argument to a vector of usize (task numbers)
+                                    let arg_as_number: Vec<usize> =
+                                        arg.iter().map(|s| s.parse::<usize>().unwrap()).collect();
+
+                                    // Get the first element of the vector (should only be one element)
+                                    let first_element: usize =
+                                        *arg_as_number.iter().next().unwrap();
+                                    if first_element > 0 {
+                                        // Remove the task with the specified number
+                                        remove_task(filename, first_element);
+                                    } else {
+                                        println!("Error! There is no task at the specified index.")
+                                    }
                                 }
                             }
                         };
@@ -218,14 +250,16 @@ fn main() {
                         println!("Usage: todo [command] [options]");
                         println!(" ");
                         println!("Commands");
-                        println!("add, a        Add a new task");
-                        println!("remove, r     Remove a task by its number");
-                        println!("list, l       List all tasks");
-                        println!("status, s     Change status of a task by its number");
-                        println!("help, h       Show this help");
+                        println!("add, a <task>                   Add a new task");
+                        println!("remove, r <task number|all>     Remove a task by its number or all tasks.");
+                        println!("list, l                         List all tasks");
+                        println!(
+                            "status, s <task number>         Change status of a task by its number"
+                        );
+                        println!("help, h                         Show this help");
                         println!(" ");
                         println!("Examples");
-                        println!("todo add \"Compile code\"  Add a new task");
+                        println!("todo add \"Compile code\"    Add a new task");
                         println!("todo remove 2              Remove task number 2");
                         println!("todo list                  List all tasks");
                         println!("todo status 3              Change status of task number 3")
@@ -234,8 +268,6 @@ fn main() {
                 }
             }
         };
-    } else {
-        println!("No arguments provided. Use 'help' to find some info.");
     }
 }
 
