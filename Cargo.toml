@@ -1,11 +1,9 @@
 [package]
 name = "todo-list"
-version = "0.1.1"
+version = "0.1.2"
 repository = "https://github.com/PepeePL/todo-list"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 dirs = "4.0.0"
-
-[build]
